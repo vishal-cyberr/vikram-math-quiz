@@ -56,8 +56,8 @@ function generateQuestion() {
   let num1, num2, op, answer;
   const operators = ["+", "-", "×", "÷"];
   do {
-    num1 = Math.floor(Math.random() * 20) + 1;
-    num2 = Math.floor(Math.random() * 20) + 1;
+    num1 = Math.floor(Math.random() * 260) + 1;
+    num2 = Math.floor(Math.random() * 210) + 1;
     op = operators[Math.floor(Math.random() * operators.length)];
     if (op === "+") answer = num1 + num2;
     else if (op === "-") answer = num1 - num2;
@@ -142,4 +142,5 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
 
