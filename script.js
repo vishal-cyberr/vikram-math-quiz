@@ -29,8 +29,8 @@ function launchFireworks() {
       x: fireworksCanvas.width / 2,
       y: fireworksCanvas.height / 2,
       angle: Math.random() * 2 * Math.PI,
-      speed: Math.random() * 4 + 2,
-      radius: Math.random() * 3 + 2,
+      speed: Math.random() * 4 + 12,
+      radius: Math.random() * 23 + 2,
       color: `hsl(${Math.random() * 360}, 100%, 50%)`
     });
   }
@@ -142,3 +142,4 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
