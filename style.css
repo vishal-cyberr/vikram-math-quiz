@@ -1,101 +1,137 @@
-/* General Styling */
+/* General Styling *//* 🎨 General Styling */
 body {
   font-family: 'Comic Sans MS', Arial, sans-serif;
-  background: linear-gradient(to bottom, #f2f9ff, #d6f0ff);
+  background: linear-gradient(to bottom, #ffecd2, #fcb69f);
   text-align: center;
   padding: 30px;
   margin: 0;
+  overflow-x: hidden;
 }
 
-/* Title & Score */
+/* 🎯 Title & Score */
 header h1 {
-  color: #004aad;
-  font-size: 2.5rem;
+  color: #ff4081;
+  font-size: 2.8rem;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 #score {
   font-weight: bold;
   font-size: 22px;
   margin-bottom: 20px;
   color: #333;
+  background: #fff5c3;
+  padding: 8px 15px;
+  border-radius: 12px;
+  display: inline-block;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
-/* Quiz Box */
+/* 📦 Quiz Box */
 #quiz {
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 20px;
-  max-width: 400px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  padding: 25px;
+  max-width: 450px;
   margin: auto;
+  animation: popIn 0.6s ease;
 }
 #questionBox {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin-bottom: 15px;
+  color: #444;
 }
 
-/* Input */
+/* ✏ Input */
 #answerInput {
-  padding: 10px;
+  padding: 12px;
   font-size: 18px;
-  width: 120px;
+  width: 130px;
   text-align: center;
-  border: 2px solid #004aad;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  border: 3px solid #ff9800;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: 0.3s;
+}
+#answerInput:focus {
+  outline: none;
+  border-color: #ff5722;
+  box-shadow: 0 0 8px #ff5722;
 }
 
-/* Buttons */
+/* 🔘 Buttons */
 button {
   margin: 10px;
   padding: 12px 25px;
   font-size: 16px;
   cursor: pointer;
-  background: #4CAF50;
+  background: linear-gradient(135deg, #ff6f61, #ff4081);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 button:hover {
-  background: #45a049;
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff4081, #ff6f61);
+  transform: scale(1.1) rotate(-1deg);
 }
 
-/* Feedback */
+/* 💬 Feedback */
 #feedback {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 12px;
+  min-height: 28px;
+  animation: fadeIn 0.5s ease;
 }
 
-/* Images */
+/* 🖼 Reward Images */
 #imageBox img {
-  max-width: 90%;
+  max-width: 80%;
   margin-top: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  animation: bounceIn 0.8s ease;
+}
+#imageBox img:hover {
+  transform: scale(1.08) rotate(2deg);
+  transition: 0.4s;
 }
 
-/* Fireworks Canvas */
+/* 🎆 Fireworks Canvas */
 #fireworks {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   z-index: 999;
 }
-img {
-  max-width: 100px;
-  margin-top: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-}
-/* Responsive */
+
+/* 📱 Responsive */
 @media (max-width: 500px) {
   body { padding: 15px; }
   #quiz { max-width: 100%; }
   button { font-size: 14px; padding: 10px 15px; }
+  #imageBox img { max-width: 95%; }
 }
+
+/* 🎉 Animations */
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 1; }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+
