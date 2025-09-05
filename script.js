@@ -5,11 +5,8 @@ const attempts = [];
 let currentIndex = 0;
 let score = 0;
 
-// Load all 50 reward images dynamically
-// Load all 10 reward images dynamically (from root folder)
+// ✅ Load all 10 reward images dynamically (from root folder)
 const vikramImages = Array.from({ length: 10 }, (_, i) => `${i + 1}.jpg`);
-
-let currentImageIndex = 0;
 
 // DOM Elements
 const questionBox = document.getElementById("questionBox");
@@ -79,6 +76,7 @@ function showQuestion(index) {
   questionBox.textContent = `Q${index + 1}: ${questions[index]} = `;
   answerInput.value = userInputs[index];
   feedback.textContent = "";
+  imageBox.innerHTML = ""; // clear reward when moving to next question
 }
 
 // ✅ Check Answer
@@ -87,9 +85,8 @@ function checkAnswer() {
   userInputs[currentIndex] = input;
 
   if (!input) {
-    attempts[currentIndex]++;
-    feedback.textContent = `❌ Wrong! Correct answer is ${answers[currentIndex]}`;
-    feedback.style.color = "red";
+    feedback.textContent = "⚠ Please enter an answer!";
+    feedback.style.color = "orange";
     imageBox.innerHTML = "";
     return;
   }
@@ -100,9 +97,9 @@ function checkAnswer() {
     score++;
     scoreBox.textContent = `Score: ${score}`;
 
-    // 🎁 Show reward image
-    imageBox.innerHTML = `<img src="${vikramImages[currentImageIndex]}" alt="Reward Image">`;
-    if (currentImageIndex < vikramImages.length - 1) currentImageIndex++;
+    // 🎁 Show a random reward image
+    const randomIndex = Math.floor(Math.random() * vikramImages.length);
+    imageBox.innerHTML = `<img src="${vikramImages[randomIndex]}" alt="Reward Image">`;
 
     launchFireworks();
   } else {
@@ -120,11 +117,6 @@ function checkAnswer() {
 
 // 🔀 Navigation
 function nextQuestion() {
-  if (!userInputs[currentIndex]) {
-    attempts[currentIndex]++;
-    feedback.textContent = `❌ Wrong! Correct answer is ${answers[currentIndex]}`;
-    feedback.style.color = "red";
-  }
   currentIndex++;
   showQuestion(currentIndex);
 }
@@ -144,6 +136,3 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
-
-
-
