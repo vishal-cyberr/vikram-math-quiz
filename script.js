@@ -6,7 +6,9 @@ let currentIndex = 0;
 let score = 0;
 
 // Load all 50 reward images dynamically
-const vikramImages = Array.from({ length: 50 }, (_, i) => `vikramraj/${i + 1}.jpg`);
+// Load all 10 reward images dynamically (from root folder)
+const vikramImages = Array.from({ length: 10 }, (_, i) => `${i + 1}.jpg`);
+
 let currentImageIndex = 0;
 
 // DOM Elements
@@ -142,5 +144,6 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
 
 
