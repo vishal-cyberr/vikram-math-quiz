@@ -5,7 +5,7 @@ const attempts = [];
 let currentIndex = 0;
 let score = 0;
 
-// ✅ Load all 10 reward images dynamically (from root folder)
+// ✅ Load all 52 reward images dynamically (from root folder)
 const vikramImages = Array.from({ length: 52 }, (_, i) => `${i + 1}.jpg`);
 
 // DOM Elements
@@ -15,39 +15,75 @@ const feedback = document.getElementById("feedback");
 const imageBox = document.getElementById("imageBox");
 const scoreBox = document.getElementById("score");
 const fireworksCanvas = document.getElementById("fireworks");
-const ctx = fireworksCanvas.getContext("2d");
+const ctx = fireworksCanvas.getContext("3d");
 
-// 🎆 Fireworks Animation
+// 🎆 Pro Fireworks Animation
 function launchFireworks() {
   fireworksCanvas.width = window.innerWidth;
   fireworksCanvas.height = window.innerHeight;
 
   const particles = [];
-  for (let i = 0; i < 100; i++) {
-    particles.push({
-      x: fireworksCanvas.width / 2,
-      y: fireworksCanvas.height / 2,
-      angle: Math.random() * 2 * Math.PI,
-      speed: Math.random() * 4 + 12,
-      radius: Math.random() * 23 + 2,
-      color: `hsl(${Math.random() * 360}, 100%, 50%)`
-    });
+
+  // Create multiple firework bursts
+  for (let i = 0; i < 5; i++) {
+    let centerX = Math.random() * fireworksCanvas.width;
+    let centerY = Math.random() * fireworksCanvas.height / 2; // upper half
+    let colorHue = Math.random() * 360;
+
+    for (let j = 0; j < 80; j++) {
+      particles.push({
+        x: centerX,
+        y: centerY,
+        angle: Math.random() * 2 * Math.PI,
+        speed: Math.random() * 4 + 2,
+        radius: Math.random() * 3 + 1,
+        color: `hsl(${colorHue}, 100%, 50%)`,
+        alpha: 1,
+        decay: Math.random() * 0.02 + 0.01
+      });
+    }
   }
 
-  let frame = 0;
   function animate() {
-    ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
-    for (let p of particles) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // fade effect
+    ctx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+
+    for (let i = 0; i < particles.length; i++) {
+      let p = particles[i];
       p.x += Math.cos(p.angle) * p.speed;
       p.y += Math.sin(p.angle) * p.speed;
+      p.alpha -= p.decay;
+
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+        i--;
+        continue;
+      }
+
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
+      ctx.fillStyle = `rgba(${hexToRgb(p.color)}, ${p.alpha})`;
       ctx.fill();
     }
-    if (frame++ < 60) requestAnimationFrame(animate);
+
+    if (particles.length > 0) {
+      requestAnimationFrame(animate);
+    }
   }
+
   animate();
+}
+
+// Helper: convert HSL color to RGB
+function hexToRgb(hsl) {
+  let temp = document.createElement("div");
+  temp.style.color = hsl;
+  document.body.appendChild(temp);
+
+  let rgb = window.getComputedStyle(temp).color;
+  document.body.removeChild(temp);
+
+  return rgb.match(/\d+/g).slice(0, 3).join(",");
 }
 
 // 🔢 Generate Math Question
@@ -136,4 +172,5 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
 
