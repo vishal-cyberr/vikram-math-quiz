@@ -16,75 +16,144 @@ const imageBox = document.getElementById("imageBox");
 const scoreBox = document.getElementById("score");
 const fireworksCanvas = document.getElementById("fireworks");
 const ctx = fireworksCanvas.getContext("3d");
+// PRO fireworks: robust, pro-like bursts with trails
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('fireworks');
+  if (!canvas) return; // safety
+  const ctx = canvas.getContext('2d');
 
-// 🎆 Pro Fireworks Animation
-function launchFireworks() {
-  fireworksCanvas.width = window.innerWidth;
-  fireworksCanvas.height = window.innerHeight;
+  // resize canvas to full window size (CSS sets width/height but we must set internal resolution)
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // fix for high DPI
+  }
+  window.addEventListener('resize', resize);
+  resize();
 
-  const particles = [];
+  // helper: convert H,S,L to RGB array [r,g,b]
+  function hslToRgb(h, s, l) {
+    h = h / 360;
+    s = s / 100;
+    l = l / 100;
+    if (s === 0) {
+      const v = Math.round(l * 255);
+      return [v, v, v];
+    }
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
+    const g = Math.round(hue2rgb(p, q, h) * 255);
+    const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
+    return [r, g, b];
+  }
 
-  // Create multiple firework bursts
-  for (let i = 0; i < 5; i++) {
-    let centerX = Math.random() * fireworksCanvas.width;
-    let centerY = Math.random() * fireworksCanvas.height / 2; // upper half
-    let colorHue = Math.random() * 360;
+  // particle array and control
+  let particles = [];
+  let running = false;
 
-    for (let j = 0; j < 80; j++) {
+  // create a burst of particles at (cx, cy)
+  function createBurst(cx, cy, hue, count = 90) {
+    hue = hue === undefined ? Math.random() * 360 : hue;
+    const [r, g, b] = hslToRgb(hue, 100, 55);
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = (Math.random() * 4 + 1.5) * (0.7 + Math.random() * 1.6);
       particles.push({
-        x: centerX,
-        y: centerY,
-        angle: Math.random() * 2 * Math.PI,
-        speed: Math.random() * 4 + 2,
-        radius: Math.random() * 3 + 1,
-        color: `hsl(${colorHue}, 100%, 50%)`,
-        alpha: 1,
-        decay: Math.random() * 0.02 + 0.01
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: Math.random() * 2.6 + 0.6,
+        life: 1,
+        decay: Math.random() * 0.015 + 0.006,
+        rgb: [r, g, b],
+        gravity: 0.02 + Math.random() * 0.03
       });
     }
   }
 
+  // main animation loop
   function animate() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // fade effect
-    ctx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+    // fade with slight trail
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,0.18)'; // trail fade amount (adjust)
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < particles.length; i++) {
-      let p = particles[i];
-      p.x += Math.cos(p.angle) * p.speed;
-      p.y += Math.sin(p.angle) * p.speed;
-      p.alpha -= p.decay;
+    // draw bright particles with additive blending
+    ctx.globalCompositeOperation = 'lighter';
 
-      if (p.alpha <= 0) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      // physics
+      p.vy += p.gravity;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.998; // small air drag
+      p.vy *= 0.998;
+
+      // fade
+      p.life -= p.decay;
+      if (p.life <= 0 || p.y > canvas.height + 50) {
         particles.splice(i, 1);
-        i--;
         continue;
       }
 
+      // draw particle (glow)
+      const alpha = Math.max(0, p.life);
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${hexToRgb(p.color)}, ${p.alpha})`;
+      ctx.fillStyle = `rgba(${p.rgb[0]},${p.rgb[1]},${p.rgb[2]},${alpha})`;
+      ctx.arc(p.x, p.y, p.r + (1 - p.life) * 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // tiny spark (center)
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
+      ctx.arc(p.x, p.y, Math.max(0.3, p.r * 0.4), 0, Math.PI * 2);
       ctx.fill();
     }
 
     if (particles.length > 0) {
       requestAnimationFrame(animate);
+    } else {
+      running = false;
     }
   }
 
-  animate();
-}
+  // public launcher — creates several bursts across the top half of the screen
+  function launchFireworks(ProOptions = {}) {
+    const bursts = ProOptions.bursts || Math.floor(3 + Math.random() * 3); // 3-5 bursts
+    for (let b = 0; b < bursts; b++) {
+      const cx = Math.random() * window.innerWidth;
+      const cy = Math.random() * (window.innerHeight * 0.45) + 40; // upper area
+      const hue = Math.random() * 360;
+      createBurst(cx, cy, hue, 80 + Math.floor(Math.random() * 40));
+    }
 
-// Helper: convert HSL color to RGB
-function hexToRgb(hsl) {
-  let temp = document.createElement("div");
-  temp.style.color = hsl;
-  document.body.appendChild(temp);
+    // start animation loop if not running
+    if (!running) {
+      running = true;
+      requestAnimationFrame(animate);
+    }
+  }
 
-  let rgb = window.getComputedStyle(temp).color;
-  document.body.removeChild(temp);
+  // expose globally so other code (e.g., checkAnswer) can call it
+  window.launchFireworks = launchFireworks;
 
-  return rgb.match(/\d+/g).slice(0, 3).join(",");
-}
+  // small demo: remove/comment out in production
+  // launchFireworks(); // optional auto test
+});
 
 // 🔢 Generate Math Question
 function generateQuestion() {
@@ -172,5 +241,6 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
 
 
