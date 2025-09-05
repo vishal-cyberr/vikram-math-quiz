@@ -1,0 +1,101 @@
+/* General Styling */
+body {
+  font-family: 'Comic Sans MS', Arial, sans-serif;
+  background: linear-gradient(to bottom, #f2f9ff, #d6f0ff);
+  text-align: center;
+  padding: 30px;
+  margin: 0;
+}
+
+/* Title & Score */
+header h1 {
+  color: #004aad;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+#score {
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Quiz Box */
+#quiz {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+}
+#questionBox {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+/* Input */
+#answerInput {
+  padding: 10px;
+  font-size: 18px;
+  width: 120px;
+  text-align: center;
+  border: 2px solid #004aad;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+  margin: 10px;
+  padding: 12px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+button:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+/* Feedback */
+#feedback {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Images */
+#imageBox img {
+  max-width: 90%;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Fireworks Canvas */
+#fireworks {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+img {
+  max-width: 100px;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+}
+/* Responsive */
+@media (max-width: 500px) {
+  body { padding: 15px; }
+  #quiz { max-width: 100%; }
+  button { font-size: 14px; padding: 10px 15px; }
+}
