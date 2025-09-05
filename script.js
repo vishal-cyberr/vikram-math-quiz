@@ -6,7 +6,7 @@ let currentIndex = 0;
 let score = 0;
 
 // ✅ Load all 10 reward images dynamically (from root folder)
-const vikramImages = Array.from({ length: 10 }, (_, i) => `${i + 1}.jpg`);
+const vikramImages = Array.from({ length: 52 }, (_, i) => `${i + 1}.jpg`);
 
 // DOM Elements
 const questionBox = document.getElementById("questionBox");
@@ -136,3 +136,4 @@ document.getElementById("prevBtn").addEventListener("click", prevQuestion);
 // 🚀 Start Game
 generateQuestion();
 showQuestion(0);
+
